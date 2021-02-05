@@ -35,3 +35,17 @@ spack unload python
 which python
 #/pickett/software/miniconda3/bin/python
 ```
+
+Feb, 2021
+- We blast the genome assembly to chroloplast genome and found a lot of hits. so we think we also need to filter cp reads from HiC data.
+```bash
+mkdir /pickett/projects/redbud/analyses_falcon_unzip/10_filter_HiC
+spack load bowtie2
+bowtie2-build ../7_chloroplast_20210128/redbud_chloroplast_genome.fasta cp_genome
+bowtie2 -p 18 \
+-x cp_genome \
+-1 ../../raw_data/CVFP12_S7_L003_R1_001.fastq.gz \
+-2 ../../raw_data/CVFP12_S7_L003_R2_001.fastq.gz \
+-S Aligned_cp.sam \
+--un-conc HiC_cp_not_aligned.fq >& bowtie2.log &
+```
