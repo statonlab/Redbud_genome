@@ -36,8 +36,28 @@ which python
 #/pickett/software/miniconda3/bin/python
 ```
 
-Feb, 2021
-- We blast the genome assembly to chroloplast genome and found a lot of hits. so we think we also need to filter cp reads from HiC data.
+Feb, 2021     
+We blast the genome assembly to chroloplast genome and found a lot of hits. 
+Remove chloroplast reads from PacBio reads.
+First, the reads were aligned to redbud chloroplast sequences by minimap2 and output results in .paf file.     
+Second, used python scripts [filter_paf.py](https://github.com/statonlab/Redbud_genome/blob/main/scripts/filter_paf.py) to extract reads with >90% alignment length to chloroplast.  
+```bash
+cd /pickett/projects/redbud/preads/1_filter_cp
+python ../../python_scripts/filter_paf.py ../../analyses/8_reads_to_chloroplast_20210202/redbud_reads_to_chloroplast.paf --rate 0.9
+```
+This will output two file: 
+  - `aligned_read_headers.txt` stored the read headers aligned to cp with >90% length 
+  - `unaligned_read_headers.txt` stored read headers aligned to cp with < 90% length.     
+
+Last, remove the reads aligned to cp using python script [extract_seqs.py](https://github.com/statonlab/Redbud_genome/blob/main/scripts/extract_seqs.py). This script takes `aligned_read_headers.txt` and raw reads fasta files as input, and output aligned reads and clean reads into two fasta files provided by users. 
+```bash
+# need to make sure conda environment contains biopython library
+python ../../python_scripts/extract_seqs.py ../redbud_pacbio_long_reads_concatenated.fasta aligned_read_headers.txt cp_reads.fasta redbud_clean_PBreads.fasta
+```
+  - `cp_reads.fasta` stored cp reads.
+  - `redbud_clean_PBreads.fasta` stored clean reads. You can name the files by your own. 
+
+We think we also need to filter cp reads from HiC data too.
 ```bash
 mkdir /pickett/projects/redbud/analyses_falcon_unzip/10_filter_HiC
 spack load bowtie2
