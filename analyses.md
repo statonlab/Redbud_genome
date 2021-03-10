@@ -25,6 +25,7 @@ Check mapping stats
 ```bash
 spack load samtools@1.10
 samtools flagstats Pb_alignment_p.sam
+# 99% mapping rate. The entire folder is deleted after. 
 ```
 After loading samtools, the system chose to use python on spack instead of conda, at this time, the packages installed in the conda environments will not function.
 To change python back to conda version, need to unload python from spack.
@@ -42,8 +43,8 @@ Remove chloroplast reads from PacBio reads.
 First, the reads were aligned to redbud chloroplast sequences by minimap2 and output results in .paf file.     
 Second, used python scripts [filter_paf.py](https://github.com/statonlab/Redbud_genome/blob/main/scripts/filter_paf.py) to extract reads with >90% alignment length to chloroplast.  
 ```bash
-cd /pickett/projects/redbud/preads/1_filter_cp
-python ../../python_scripts/filter_paf.py ../../analyses/8_reads_to_chloroplast_20210202/redbud_reads_to_chloroplast.paf --rate 0.9
+cd /pickett/projects/redbud/version_2/2.0.0/analysis/1_filter_cp
+python /pickett/projects/redbud/python_scripts/filter_paf.py /pickett/projects/redbud/version_1/1.0.0/8_reads_to_chloroplast_20210202/redbud_reads_to_chloroplast.paf --rate 0.9
 ```
 This will output two file: 
   - `aligned_read_headers.txt` stored the read headers aligned to cp with >90% length 
@@ -52,7 +53,7 @@ This will output two file:
 Last, remove the reads aligned to cp using python script [extract_seqs.py](https://github.com/statonlab/Redbud_genome/blob/main/scripts/extract_seqs.py). This script takes `aligned_read_headers.txt` and raw reads fasta files as input, and output aligned reads and clean reads into two fasta files provided by users. 
 ```bash
 # need to make sure conda environment contains biopython library
-python ../../python_scripts/extract_seqs.py ../redbud_pacbio_long_reads_concatenated.fasta aligned_read_headers.txt cp_reads.fasta redbud_clean_PBreads.fasta
+python /pickett/projects/redbud/python_scripts/extract_seqs.py /pickett/projects/redbud/raw_data/pacbio_long_reads/redbud_pacbio_long_reads_concatenated.fasta aligned_read_headers.txt cp_reads.fasta redbud_clean_PBreads.fasta
 ```
   - `cp_reads.fasta` stored cp reads.
   - `redbud_clean_PBreads.fasta` stored clean reads. You can name the files by your own. 
