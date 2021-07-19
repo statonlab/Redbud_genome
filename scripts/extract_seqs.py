@@ -19,7 +19,7 @@ with open(header_file, "r") as contigs:
         contigs_list.append(header)
 
 wanted = set(contigs_list)
-print(contigs_list)
+#print(contigs_list)
 fasta_sequences = SeqIO.parse(open(fasta_file),'fasta')
 with open(result1_file, "w") as f1, open(result2_file,"w") as f2:
     for seq in fasta_sequences:
